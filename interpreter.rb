@@ -36,11 +36,13 @@ class Environment
     return x if not x.is_a? Array # x is an atom
     case x[0]
       when :define then frame[x[1]] = value(x[2]); return nil
-      when :lambda
-        _, vars, exp = x
-        lambda{ |*args|  }
+      when :lambda # for now: assume lambda always takes exactly one argument
+        #_, var, exp_array = x
+        lambda{ |arg| Environment.new({ x[1].first => arg }, self).value(x[2]) }
+        # for more arguments:
+        #lambda{ |*args| Environment.new() }
       else values = x.map{ |exp| value(exp) }
-          values[0].call(*values.drop(1))
+        values[0].call(*values.drop(1))
     end
   end
 
@@ -120,9 +122,22 @@ class Repl
 end
 
 # env = Environment.global_env
-# input = "(+ 2 3)"
+# input = "(lambda (x) (* x x))"
+# puts Parser.parse(input).inspect
+
+# exp = Parser.parse(input)
+# puts exp[1].inspect
+
+# env_new = Environment.new({ exp[1].first => 5 }, env)
+# puts env_new.value([:*, :x, :x])
+
+
+
+# input = "((lambda (x) (* x x)) 5)"
 # puts Parser.parse(input).inspect
 # puts env.value(Parser.parse(input))
+
+# lambda{ |arg| Environment.new({ x[1] => arg }, self).value(x[2]) }
 
 
 #string1 = "(define x 5)"
