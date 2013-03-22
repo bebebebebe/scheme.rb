@@ -24,6 +24,9 @@ class Environment
   # env_binding(x).frame[x]
   # env_binding(:+).frame[:+] = lambda{|x, y| x.send(:+, y)}
 
+
+
+
   def env_binding(var) # the environment that binds variable var
     if frame.has_key?(var)
       self
@@ -38,9 +41,12 @@ class Environment
       when :define then frame[x[1]] = value(x[2]); return nil
       when :lambda # for now: assume lambda always takes exactly one argument
         #_, var, exp_array = x
-        lambda{ |arg| Environment.new({ x[1].first => arg }, self).value(x[2]) }
-        # for more arguments:
-        #lambda{ |*args| Environment.new() }
+        #lambda{ |arg| Environment.new({ x[1].first => arg }, self).value(x[2]) }
+        # for more arguments:        
+        
+        
+
+        lambda{ |*args| Environment.new(Hash[x[1].zip(args)], self).value(x[2]) }
       else values = x.map{ |exp| value(exp) }
         values[0].call(*values.drop(1))
     end
@@ -121,54 +127,4 @@ class Repl
 
 end
 
-# env = Environment.global_env
-# input = "(lambda (x) (* x x))"
-# puts Parser.parse(input).inspect
-
-# exp = Parser.parse(input)
-# puts exp[1].inspect
-
-# env_new = Environment.new({ exp[1].first => 5 }, env)
-# puts env_new.value([:*, :x, :x])
-
-
-
-# input = "((lambda (x) (* x x)) 5)"
-# puts Parser.parse(input).inspect
-# puts env.value(Parser.parse(input))
-
-# lambda{ |arg| Environment.new({ x[1] => arg }, self).value(x[2]) }
-
-
-#string1 = "(define x 5)"
-#string2 = "(define x (+ 2 3))"
-# tokens1 = Reading.tokenize(string1)
-# tokens2 = Reading.tokenize(string2)
-# read1 = Reading.read_from tokens1
-# read2 = Reading.read_from tokens2
-# puts "tokens for #{string1}: "
-# puts Reading.tokenize(string1).inspect
-# puts "tokens for #{string2}: #{tokens2}"
-# puts "output1: #{read1}"
-# puts "output2: #{read2}"
-
-# puts "*****"
-#puts Reading.parse(string1).inspect
-#puts Reading.parse(string2).inspect
-
-
-# tokens = ["(", "define", "x", "(", "+", "2", "3", ")"]
-# #puts Reading.read_from(tokens) == [:define, :x, [:+, 2, 3]]
-# puts tokens2.join(", ")
-# puts "***"
-# puts tokens.join(", ")
-# puts Reading.tokenize("(define x 5)").inspect
-# puts Reading.tokenize(string1).inspect
-
-
-# env2 = Environment.new({'y' => 2}, env1)
-# env3 = Environment.new({'x' => 3}, env2)
-# puts "value of x in env1: #{env1.value('x')}"
-# puts "value of x in env2: #{env2.value('x')}"
-# puts "value of x in env3: #{env3.value('x')}"
-# puts "value of y in env3: #{env3.value('y')}"
+   env = Environment.global_env
