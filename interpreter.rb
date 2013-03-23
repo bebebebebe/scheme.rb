@@ -13,6 +13,7 @@ class Environment
   def self.global_env
     Environment.new({:car => lambda{|lat| lat[0]},
                     :cdr => lambda{|lat| lat.drop(1)},
+                    :cons => lambda{|a, lat| [a] + lat},
                     :+ => lambda{|x,y| x + y},
                     :- => lambda{|x,y| x - y},
                     :* => lambda{|x,y| x * y},
@@ -40,7 +41,8 @@ class Environment
         lambda{ |*args| Environment.new(Hash[x[1].zip(args)], self).value(x[2]) }
       when :if
         value(x[1]) == true ? value(x[2]) : value(x[3])
-      
+      when :quote then x[1]
+
       
 
       else values = x.map{ |exp| value(exp) }
@@ -51,8 +53,6 @@ class Environment
 end
 
 
-
-
 module Parser
 
   def self.parse(scheme_string)
@@ -60,7 +60,8 @@ module Parser
   end
 
   def self.tokenize(scheme_string) # turn scheme input string into array of tokens
-    scheme_string.gsub('(', ' ( ').gsub(')', ' ) ').split
+    scheme_string.gsub('(', ' ( ').gsub(')', ' ) ').gsub("'", "' ").split
+    ## take ' instead of quote into accout above
   end
 
   def self.read_from(tokens)
@@ -126,8 +127,13 @@ class Repl
 end
 
  env = Environment.global_env
- input = "(+ 2 3)"
+ #input = "(if (= 2 1) 0 (if (= 1 1) 1 2)) "
+ input = "(cons 0 (quote (1 2 3)))"
+#input = "(quote (1 2 3))"
+#input = "(if (= 5 5) (if (= 1 1) 1 2))"
  x = Parser.parse(input)
  puts x.inspect
-# puts env.value(Parser.parse(input))
+ val = env.value(Parser.parse(input))
+ puts val.inspect
+ puts Parser.to_scheme(env.value(Parser.parse(input)))
 
