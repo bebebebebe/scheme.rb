@@ -14,18 +14,14 @@ class Environment
     Environment.new({:car => lambda{|lat| lat[0]},
                     :cdr => lambda{|lat| lat.drop(1)},
                     :+ => lambda{|x,y| x + y},
+                    :- => lambda{|x,y| x - y},
                     :* => lambda{|x,y| x * y},
-                    :pi => 3.14159
+                    :pi => 3.14159,
+                    :"=" => lambda{|x,y| x == y}
+
                      
                      })
   end
-
-
-  # env_binding(x).frame[x]
-  # env_binding(:+).frame[:+] = lambda{|x, y| x.send(:+, y)}
-
-
-
 
   def env_binding(var) # the environment that binds variable var
     if frame.has_key?(var)
@@ -39,20 +35,22 @@ class Environment
     return x if not x.is_a? Array # x is an atom
     case x[0]
       when :define then frame[x[1]] = value(x[2]); return nil
-      when :lambda # for now: assume lambda always takes exactly one argument
-        #_, var, exp_array = x
-        #lambda{ |arg| Environment.new({ x[1].first => arg }, self).value(x[2]) }
-        # for more arguments:        
-        
-        
-
+      when :lambda
+      # one argument version: lambda{ |arg| Environment.new({ x[1].first => arg }, self).value(x[2]) }
         lambda{ |*args| Environment.new(Hash[x[1].zip(args)], self).value(x[2]) }
+      when :if
+        value(x[1]) == true ? value(x[2]) : value(x[3])
+      
+      
+
       else values = x.map{ |exp| value(exp) }
         values[0].call(*values.drop(1))
     end
   end
 
 end
+
+
 
 
 module Parser
@@ -127,4 +125,9 @@ class Repl
 
 end
 
-   env = Environment.global_env
+ env = Environment.global_env
+ input = "(+ 2 3)"
+ x = Parser.parse(input)
+ puts x.inspect
+# puts env.value(Parser.parse(input))
+
