@@ -38,9 +38,14 @@ class Environment
       when :if
         value(x[1]) == true ? value(x[2]) : value(x[3])
       when :quote then x[1]
+      when :begin
+        for exp in x.drop(1) do
+          value(exp)
+        end
+          return value(x.last)
       when :set! 
         begin
-          env_binding(x[1]).frame[x[1]] = value(x[2])#; return nil
+          env_binding(x[1]).frame[x[1]] = value(x[2])
         rescue 
           puts ". . . oops, #{x[1]} isn't bound"
         end
@@ -134,6 +139,7 @@ end
 # #input = "(if (= 5 5) (if (= 1 1) 1 2))"
 #  x = Parser.parse(input)
 #  puts x.inspect
+
 #  val = env.value(Parser.parse(input))
 #  puts val.inspect
 #  puts Parser.to_scheme(env.value(Parser.parse(input)))
