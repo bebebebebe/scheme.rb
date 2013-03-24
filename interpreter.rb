@@ -6,10 +6,6 @@ class Environment
     @outer_env = outer_env
   end
 
-  def self.testing
-    env = Environment.new(Hash.new)
-  end
-
   def self.global_env
     Environment.new({:car => lambda{|lat| lat[0]},
                     :cdr => lambda{|lat| lat.drop(1)},
@@ -42,9 +38,13 @@ class Environment
       when :if
         value(x[1]) == true ? value(x[2]) : value(x[3])
       when :quote then x[1]
-
-      
-
+      when :set! 
+        begin
+          env_binding(x[1]).frame[x[1]] = value(x[2])#; return nil
+        rescue 
+          puts ". . . oops, #{x[1]} isn't bound"
+        end
+        return nil
       else values = x.map{ |exp| value(exp) }
         values[0].call(*values.drop(1))
     end
@@ -126,14 +126,15 @@ class Repl
 
 end
 
- env = Environment.global_env
- #input = "(if (= 2 1) 0 (if (= 1 1) 1 2)) "
- input = "(cons 0 (quote (1 2 3)))"
-#input = "(quote (1 2 3))"
-#input = "(if (= 5 5) (if (= 1 1) 1 2))"
- x = Parser.parse(input)
- puts x.inspect
- val = env.value(Parser.parse(input))
- puts val.inspect
- puts Parser.to_scheme(env.value(Parser.parse(input)))
+#  env = Environment.global_env
+
+#  #input = "(if (= 2 1) 0 (if (= 1 1) 1 2)) "
+#  #input = "(cons 0 (quote (1 2 3)))"
+# #input = "(quote (1 2 3))"
+# #input = "(if (= 5 5) (if (= 1 1) 1 2))"
+#  x = Parser.parse(input)
+#  puts x.inspect
+#  val = env.value(Parser.parse(input))
+#  puts val.inspect
+#  puts Parser.to_scheme(env.value(Parser.parse(input)))
 
