@@ -13,8 +13,10 @@ class Environment
                     :+ => lambda{|x,y| x + y},
                     :- => lambda{|x,y| x - y},
                     :* => lambda{|x,y| x * y},
-                    :pi => 3.14159,
-                    :"=" => lambda{|x,y| x == y}
+                    :** => lambda{|x,y| x ** y},
+                    :"=" => lambda{|x,y| x == y},
+                    :">" => lambda{|x,y| x > y},
+                    :"<" => lambda{|x,y| x < y}
 
                      
                      })
@@ -33,7 +35,6 @@ class Environment
     case x[0]
       when :define then frame[x[1]] = value(x[2]); return nil
       when :lambda
-      # one argument version: lambda{ |arg| Environment.new({ x[1].first => arg }, self).value(x[2]) }
         lambda{ |*args| Environment.new(Hash[x[1].zip(args)], self).value(x[2]) }
       when :if
         value(x[1]) == true ? value(x[2]) : value(x[3])
@@ -47,9 +48,9 @@ class Environment
         begin
           env_binding(x[1]).frame[x[1]] = value(x[2])
         rescue 
-          puts ". . . oops, #{x[1]} isn't bound"
+          puts ". . . oops, #{x[1]} can't be set as it isn't defined"
         end
-        return nil
+        #return nil
       else values = x.map{ |exp| value(exp) }
         values[0].call(*values.drop(1))
     end
@@ -64,9 +65,8 @@ module Parser
     self.read_from(self.tokenize(scheme_string))
   end
 
-  def self.tokenize(scheme_string) # turn scheme input string into array of tokens
+  def self.tokenize(scheme_string)
     scheme_string.gsub('(', ' ( ').gsub(')', ' ) ').gsub("'", "' ").split
-    ## take ' instead of quote into accout above
   end
 
   def self.read_from(tokens)
