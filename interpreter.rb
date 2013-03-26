@@ -4,6 +4,7 @@ class Environment
   def initialize(frame, outer_env=nil)
     @frame = frame
     @outer_env = outer_env
+
   end
 
   def self.global_env
@@ -29,11 +30,11 @@ class Environment
     end
   end
 
-  def value(x)
+  def value(x)  
     return env_binding(x).frame[x] if x.is_a? Symbol # x is a variable
     return x if not x.is_a? Array # x is an atom
     case x[0]
-      when :define then frame[x[1]] = value(x[2]); return nil
+      when :define then frame[x[1]] = value(x[2])
       when :lambda
         lambda{ |*args| Environment.new(Hash[x[1].zip(args)], self).value(x[2]) }
       when :if
@@ -50,7 +51,7 @@ class Environment
         rescue 
           puts ". . . oops, #{x[1]} can't be set as it isn't defined"
         end
-        #return nil
+        
       else values = x.map{ |exp| value(exp) }
         values[0].call(*values.drop(1))
     end
@@ -114,7 +115,7 @@ class Repl
   end
 
   def prompt
-    print "schemer.b> "
+    print "schemerB> "
   end
 
   def read
@@ -131,16 +132,24 @@ class Repl
 
 end
 
-#  env = Environment.global_env
 
-#  #input = "(if (= 2 1) 0 (if (= 1 1) 1 2)) "
-#  #input = "(cons 0 (quote (1 2 3)))"
-# #input = "(quote (1 2 3))"
-# #input = "(if (= 5 5) (if (= 1 1) 1 2))"
-#  x = Parser.parse(input)
-#  puts x.inspect
+#env = Environment.new({ x:5 })
+    #exp = [:begin, [:+, 2, 3], [:+, 10, 2]]
+#puts env1.value([:+, 10, 2])
+#input = "(+ 1 2)"
 
-#  val = env.value(Parser.parse(input))
-#  puts val.inspect
-#  puts Parser.to_scheme(env.value(Parser.parse(input)))
+#env = Environment.global_env
+#input = "(+ 1 2)"
+#  input = "(begin (define x 5) (+ x 2))"
+
+#   #input = "(if (= 2 1) 0 (if (= 1 1) 1 2)) "
+# #  #input = "(cons 0 (quote (1 2 3)))"
+# # input = "(quote (1 2 3))"
+# # #input = "(if (= 5 5) (if (= 1 1) 1 2))"
+#    x = Parser.parse(input)
+#    puts x == [:+, 1, 2]
+
+   # val = env.value(Parser.parse(input))
+ #puts val.inspect
+  # puts Parser.to_scheme(env.value(Parser.parse(input)))
 
