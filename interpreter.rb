@@ -49,7 +49,7 @@ class Environment
         begin
           env_binding(x[1]).frame[x[1]] = value(x[2])
         rescue 
-          puts ". . . oops, #{x[1]} can't be set as it isn't defined"
+          ". . . oops, #{x[1]} can't be set as it isn't defined"
         end
         
       else values = x.map{ |exp| value(exp) }
@@ -129,8 +129,28 @@ class Repl
   def printing
     puts Parser.to_scheme(@value)
   end
-
 end
+
+#############      experiment, for app
+
+class ReplActions
+  attr_reader :env
+
+  def initialize
+    @env = Environment.global_env
+  end
+
+  def evaluate(input)
+    @value = env.value(Parser.parse(input))
+  end
+
+  def printing
+    Parser.to_scheme(@value)
+  end
+
+  end
+
+
 
 
 #env = Environment.new({ x:5 })

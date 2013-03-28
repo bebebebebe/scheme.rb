@@ -1,0 +1,38 @@
+<section id="add">
+  <form action="/form" method="post">
+    <textarea name="message" placeholder="scheme expression..."></textarea>
+    <input type="submit" value="Evaluate!" >
+  </form>
+</section>
+
+
+<% if false %>
+
+<ul>
+<% @inputs.each do |input| %>
+  <li>
+    <%= input %>
+  </li>
+<% end %>
+</ul>
+
+<% end %>
+
+
+
+
+
+
+<ul>
+<% @inputs.each do  |input| %>
+  <!-- <li>
+    <%= "> " + params[:message] %>
+  </li> -->
+  <li>
+    <%= input %>
+  </li>
+<% end %>
+</ul>
+
+
+
