@@ -19,7 +19,8 @@ post '/form' do
   begin
     new_value = repl.evaluate(new_input)
     new_value_scheme = repl.printing
-    inputs << new_value_scheme
+    inputs << ("> " + params[:message]) #echoes user input
+    inputs << ("=> " + new_value_scheme)
   rescue 
     inputs << ". . . oops, syntax error"
   end
