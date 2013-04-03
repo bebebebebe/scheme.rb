@@ -55,30 +55,43 @@ class Environment
     end
   end
 
-  def value(x)  
-    return env_binding(x).frame[x] if x.is_a? Symbol # x is a variable
-    return x if not x.is_a? Array # x is an atom
+  def printable?(x)
+    (x[0] != :define) and (x[0] != :set!) and (x[0] != :lambda)
+  end
+
+  def value(x)
+    if x.is_a? Symbol # x is a variable
+      return env_binding(x).frame[x]
+    else
+    end
+    if not x.is_a? Array # x is an atom
+      return x
+    else
+    end
     case x[0]
-      when :define then frame[x[1]] = value(x[2])
+      when :define
+        frame[x[1]] = value(x[2])
       when :lambda
         lambda{ |*args| Environment.new(Hash[x[1].zip(args)], self).value(x[2]) }
       when :if
         value(x[1]) == true ? value(x[2]) : value(x[3])
-      when :quote then x[1]
+      when :quote 
+        x[1]
       when :begin
         for exp in x.drop(1) do
           value(exp)
-        end
+        end 
           return value(x.last)
-      when :set! 
+      when :set!
         begin
           env_binding(x[1]).frame[x[1]] = value(x[2])
-        rescue 
+        rescue
           ". . . oops, #{x[1]} can't be set as it isn't defined"
         end
-        
-      else values = x.map{ |exp| value(exp) }
+      else
+        values = x.map{ |exp| value(exp) }
         values[0].call(*values.drop(1))
+        
     end
   end
 
@@ -169,19 +182,23 @@ class ReplActions
     @value = env.value(Parser.parse(input))
   end
 
+  def print_status(input)
+    env.printable?(Parser.parse(input))
+  end
+
   def printing
     Parser.to_scheme(@value)
   end
 
-  end
+end
 
 
+# env = Environment.new({ x:5 })
+#     exp = [:begin, [:+, 2, 3], [:+, 10, 2]]
+# puts env1.value([:+, 10, 2])
+# input = "(+ 1 2)"
 
 
-#env = Environment.new({ x:5 })
-    #exp = [:begin, [:+, 2, 3], [:+, 10, 2]]
-#puts env1.value([:+, 10, 2])
-#input = "(+ 1 2)"
 
 #env = Environment.global_env
 #input = "(+ 1 2)"

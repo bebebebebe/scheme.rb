@@ -1,31 +1,31 @@
 require 'sinatra'
-require_relative './interpreter2'
+require_relative 'interpreter2'
 
-inputs = []
 repl = ReplActions.new
-
 
 get '/' do
   redirect '/form'
 end
 
 get '/form' do
-  @inputs = inputs
   erb :index
 end
-
-# post '/form' do
-#   puts params[:message]
-#   puts 'got ajax request'
-#   { error: false, returnValue:"2" }.to_json
-# end
 
 post '/form' do
   puts "user typed: " + params[:message]  
   new_input = params[:message]
-  value = repl.evaluate(new_input)
-  value_scheme = repl.printing
-  { error: false, returnValue: value_scheme}.to_json
+  begin
+    value = repl.evaluate(new_input)
+    print_status = repl.print_status(new_input)
+    value_scheme = repl.printing
+    if print_status or (value_scheme[0..4] == ". . .")
+      { error: false, value: value_scheme, returnValue: value_scheme}.to_json
+    else
+      { error: false, value: value_scheme, returnVaule: nil}.to_json
+    end
+  rescue
+    { error: false, value: nil, returnValue: ". . . oops, syntax error"}.to_json
+  end
 end
 
 # post '/form' do
