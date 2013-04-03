@@ -1,5 +1,3 @@
-require 'json'
-
 GRAPH = Hash.new
 
 module Graph
@@ -11,7 +9,7 @@ module Graph
 
 end
 
-##################### above: experiments for app. also: two lines in Environment.initialize
+##################### above: for app. also: two lines in Environment.initialize
 
 class Environment
   attr_reader :frame, :outer_env, :user_input
@@ -32,6 +30,7 @@ class Environment
                     :+ => lambda{|x,y| x + y},
                     :- => lambda{|x,y| x - y},
                     :* => lambda{|x,y| x * y},
+                    :/ => lambda{|x,y| x / y},
                     :** => lambda{|x,y| x ** y},
                     :"=" => lambda{|x,y| x == y},
                     :">" => lambda{|x,y| x > y},
