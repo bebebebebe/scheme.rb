@@ -1,9 +1,27 @@
+require 'json'
+
+GRAPH = Hash.new
+
+module Graph
+  def self.children(env) # frames of children in GRAPH
+    array = []
+    GRAPH[env].each { |child| array << child.frame}
+    array
+  end
+
+end
+
+##################### above: experiments for app. also: two lines in Environment.initialize
+
 class Environment
-  attr_reader :frame, :outer_env
+  attr_reader :frame, :outer_env, :user_input
 
   def initialize(frame, outer_env=nil)
     @frame = frame
     @outer_env = outer_env
+
+    GRAPH[self] = []
+    (GRAPH[outer_env] << self) if outer_env
 
   end
 
@@ -51,7 +69,8 @@ class Environment
         rescue 
           ". . . oops, #{x[1]} can't be set as it isn't defined"
         end
-        
+      when :write
+        @user_input = x[1..-1].join(" ")     
       else values = x.map{ |exp| value(exp) }
         values[0].call(*values.drop(1))
     end
@@ -131,7 +150,7 @@ class Repl
   end
 end
 
-#############      experiment, for app
+#############      for sinatra app
 
 class ReplActions
   attr_reader :env
