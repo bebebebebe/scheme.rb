@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>D3: tree layout</title>
+    <script type="text/javascript" src="d3.v3.js"></script>
+    <style>
+      .link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 2px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="viz"></div>
+
+    <script type="text/javascript">
+
+
+    var treeData = {"frame":"{:car=>\"lambda\", :cdr=>\"lambda\", :cons=>\"lambda\", :+=>\"lambda\", :-=>\"lambda\", :*=>\"lambda\", :**=>\"lambda\", :\"=\"=>\"lambda\", :>=>\"lambda\", :<=>\"lambda\", :\"fact-iter\"=>\"lambda\", :factorial=>\"lambda\"}","children":[{"frame":"{:n=>5}","children":[]},{"frame":"{:product=>1, :counter=>1, :\"max-count\"=>5}","children":[]},{"frame":"{:product=>1, :counter=>2, :\"max-count\"=>5}","children":[]},{"frame":"{:product=>2, :counter=>3, :\"max-count\"=>5}","children":[]},{"frame":"{:product=>6, :counter=>4, :\"max-count\"=>5}","children":[]},{"frame":"{:product=>24, :counter=>5, :\"max-count\"=>5}","children":[]},{"frame":"{:product=>120, :counter=>6, :\"max-count\"=>5}","children":[]}],"name":"global env"};
+    // fact-iter version of factorial, evaluate 5!
+
+
+    var treeData4 = {"frame":"{:car=>\"lambda\", :cdr=>\"lambda\", :cons=>\"lambda\", :+=>\"lambda\", :-=>\"lambda\", :*=>\"lambda\", :**=>\"lambda\", :\"=\"=>\"lambda\", :>=>\"lambda\", :<=>\"lambda\", :factorial=>\"lambda\"}","children":[{"frame":"{:x=>5}","children":[]},{"frame":"{:x=>4}","children":[]},{"frame":"{:x=>3}","children":[]},{"frame":"{:x=>2}","children":[]},{"frame":"{:x=>1}","children":[]},{"frame":"{:x=>0}","children":[]}],"name":"global env"};
+    // recursive factorial, evaluate 5!
+
+
+    var treeData3 = {"frame":{"car":"lambda","cdr":"lambda","cons":"lambda","+":"lambda","-":"lambda","*":"lambda","**":"lambda","=":"lambda",">":"lambda","<":"lambda","f":"lambda"},"children":[{"frame":{"x":5},"children":[]},{"frame":{"x":4},"children":[]},{"frame":{"x":3},"children":[]},{"frame":{"x":2},"children":[]},{"frame":{"x":1},"children":[]}],"name":"global env"};
+
+
+    var treeData2 = {"frame":{"car":"lambda","cdr":"lambda","cons":"lambda","+":"lambda","-":"lambda","*":"lambda","**":"lambda","=":"lambda",">":"lambda","<":"lambda","acc":"lambda","A":"lambda"},"children":[{"frame":{"start":15},"children":[{"frame":{"supplement":10},"children":[]}]}],"name":"global env"};
+    // accumulator, with (define A (acc 5)), then evaluate (A 10)
+
+
+    var treeData1 = {"children" : [
+                        { },
+                        {"name" : "A2", "frame" : ["a", "b", "c"] },
+                        {"name" : "A3", "children": [
+                          {"name" : "A31", "children" :[
+                          {"name" : "A311", "children": [
+                            {"name" : "B1", "frame" : {"a":1, "b":2, "d":3}},
+                            {"name" : "B2" }
+                          ] },
+                          {"name" : "A312" }
+                          ]}] }
+                      ]};
+
+      var vis = d3.select("#viz").append("svg:svg")
+.attr("width", 500)
+.attr("height", 300)
+.append("svg:g")
+.attr("transform", "translate(150, 0)");
+
+      var tree = d3.layout.tree()
+.size([300,200]);
+
+      var diagonal = d3.svg.diagonal()
+.projection(function(d) { return [d.y, d.x]; });
+
+      var nodes = tree.nodes(treeData);
+      var link = vis.selectAll("pathlink")
+.data(tree.links(nodes))
+.enter().append("svg:path")
+.attr("class", "link")
+.attr("d", diagonal);
+
+      var node = vis.selectAll("g.node")
+.data(nodes)
+.enter().append("svg:g")
+.attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+
+
+
+      node.append("svg:circle")
+.attr("r", 4)
+
+.style("fill", "red")
+.on("click", function(d) {      // added click event to print node name to console
+    console.log("you clicked " + d.name)
+  })
+
+.append("title")
+.text(function(d) {
+        return d.frame;
+        //return d.frame.factorial ? d.frame.factorial : "no factorial here";
+});
+
+node.append("svg:text")
+.attr("dx", function(d) { return d.children ? -8 : 8; })
+.attr("dy", 3)
+.attr("text-anchor", function(d) { return d.children ? "end" : "start"; })
+.text(function(d) { return d.name; });
+
+
+
+
+    </script>
+  </body>
+</html>

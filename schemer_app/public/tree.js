@@ -1,13 +1,8 @@
-// require "repl_app.rb"
-
-
-//  var js_tree = JSON.parse(@tree)
-//construct_tree = function(x) {console.log(x);};
 
 ;(function(exports) {
   $(document).ready(function(){
     var consoleController = $("#console").console({
-      promptLabel: '>',
+      promptLabel: '> ',
       commandValidate: function(line){
         return line !== "";
       },
@@ -16,10 +11,12 @@
           type: "POST",
           url: '/form',
           data: { message:line },
-          success: function(data){
-            console.log(data);
-            consoleController.commandResult([{msg: data.returnValue}])
+          success: function(data2){
+            console.log(data2);
+            consoleController.commandResult([{msg: data2.returnValue}]);
+            makePicture(data2.tree);
           },
+
           dataType: 'json'
         });
 
@@ -31,10 +28,3 @@
   });
   
 })(this);
-// var myFn = function(line, sdjkfhksdjf) {
-
-//   console.log(line);
-// }
-
-
-// myFn("(+ 1 1)");

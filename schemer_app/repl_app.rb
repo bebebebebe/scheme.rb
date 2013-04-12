@@ -1,5 +1,7 @@
 require 'sinatra'
-require_relative 'interpreter2'
+require 'json'
+require_relative 'graph_interpreter'
+
 
 repl = ReplActions.new
 
@@ -12,21 +14,26 @@ get '/form' do
 end
 
 post '/form' do
-  puts "user typed: " + params[:message]  
+
   new_input = params[:message]
   begin
     value = repl.evaluate(new_input)
+
     print_status = repl.print_status(new_input)
     value_scheme = repl.printing
+    treeData = repl.tree
+ 
     if print_status or (value_scheme[0..4] == ". . .")
-      { error: false, value: value_scheme, returnValue: value_scheme}.to_json
+      { error: false, value: value_scheme, tree: treeData, returnValue: value_scheme}.to_json
     else
-      { error: false, value: value_scheme, returnVaule: nil}.to_json
+      { error: false, value: value_scheme, tree: treeData, returnVaule: nil}.to_json
     end
   rescue
     { error: false, value: nil, returnValue: ". . . oops, syntax error"}.to_json
   end
+
 end
+
 
 # post '/form' do
 #   new_input = params[:message]

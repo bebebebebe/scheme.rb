@@ -1,34 +1,32 @@
 require 'json'
 
-GRAPH = Hash.new
+module Tree
 
-module Graph
-  def self.children(env) # frames of children in GRAPH
-    array = []
-    GRAPH[env].each { |child| array << child.frame}
-    array
+  def self.mini(frame) # string. represent bindings to lambdas as bindings to the string "lambda"
+    frame2 = frame.dup
+    frame2.each { |k,v| if v.class == Proc then frame2[k] = "lambda" end }.to_s
+  end  
+
+  def self.structure(vertex)
+    {frame: mini(vertex.frame), children: vertex.children.map { |i| structure(i) } }
   end
 
-  # def self.transparent
-  #   hash = Hash.new
-  #   GRAPH.each { |k,v|  }
-
-  # end
-
+  def self.label_structure(vertex)
+    structure(vertex).merge({ name:"global env" })
+  end
 
 end
 
-##################### above: experiments for app. also: two lines in Environment.initialize
-
 class Environment
-  attr_reader :frame, :outer_env
+  attr_reader :frame, :outer_env, :children
 
   def initialize(frame, outer_env=nil)
     @frame = frame
     @outer_env = outer_env
-
-    GRAPH[self] = []
-    (GRAPH[outer_env] << self) if outer_env
+    @children = []
+    if outer_env
+      outer_env.children << self
+    end
 
   end
 
@@ -43,8 +41,7 @@ class Environment
                     :"=" => lambda{|x,y| x == y},
                     :">" => lambda{|x,y| x > y},
                     :"<" => lambda{|x,y| x < y}
-
-                     
+   
                      })
   end
 
@@ -71,6 +68,7 @@ class Environment
     case x[0]
       when :define
         frame[x[1]] = value(x[2])
+                
       when :lambda
         lambda{ |*args| Environment.new(Hash[x[1].zip(args)], self).value(x[2]) }
       when :if
@@ -95,6 +93,7 @@ class Environment
     end
   end
 
+
 end
 
 
@@ -116,7 +115,7 @@ module Parser
       while tokens.first != ')'
         l.push(read_from(tokens))
       end
-      tokens.shift # why do we need this?
+       tokens.shift # why do we need this?
       l
     elsif token == ')'
       raise "shouldn't be a right paren"
@@ -146,10 +145,11 @@ module Parser
 end
 
 class Repl
-  attr_reader :input, :env
+  attr_reader :input, :env, :root
 
   def initialize
    @env = Environment.global_env
+   @root = env
   end
 
   def prompt
@@ -164,54 +164,86 @@ class Repl
     @value = env.value(Parser.parse(input))
   end
 
+  def print_status(input) # true or false
+    env.printable?(Parser.parse(input))    
+  end
+
   def printing
     puts Parser.to_scheme(@value)
+  end
+
+  def tree
+    Tree.label_structure(root)
+    
   end
 end
 
 #############      for sinatra app
 
 class ReplActions
-  attr_reader :env
+  attr_reader :env, :root
 
   def initialize
     @env = Environment.global_env
+    @root = env
   end
 
   def evaluate(input)
     @value = env.value(Parser.parse(input))
   end
 
-  def print_status(input)
+  def print_status(input) # true or false
     env.printable?(Parser.parse(input))
   end
 
-  def printing
+  def printing    
     Parser.to_scheme(@value)
   end
 
+  def tree
+    #treeData = {name: "a", frame: {x:5}, children: [name: "b", frame: {}, children: []]}
+    Tree.label_structure(root)
+  end
+
+  # def store(input)
+  #   input
+  # end
+
 end
 
+# repl = ReplActions.new
+# input = "(define fact-iter (lambda (product counter max-count) (if (> counter max-count) product (fact-iter (* counter product) (+ counter 1) max-count))))"
 
-# env = Environment.new({ x:5 })
-#     exp = [:begin, [:+, 2, 3], [:+, 10, 2]]
-# puts env1.value([:+, 10, 2])
+# repl.evaluate(input)
+# input = "(define factorial (lambda (n) (fact-iter 1 1 n)))"
+# input = "(factorial 5)"
+# repl.evaluate(input)
+# env = Environment.global_env
+# input = "(define factorial (lambda (x) (if (= x 0) 1 (* x (factorial (- x 1))))))"
+# value = Parser.parse(input)
+# puts value.inspect
+ # repl.evaluate(input)
+ # #repl.tree.to_json
+ # input = "(factorial 5)"
+ # repl.evaluate(input)
+
+
+# input = "(define x 5)"
+# repl.evaluate(input)
+# repl.print_status(input)
+# repl.printing
+
+
+# input = "(+ 2 3)"
+# repl.evaluate(input)
+# puts repl.tree.to_json
 # input = "(+ 1 2)"
+# repl.evaluate(input)
 
-
-
-#env = Environment.global_env
-#input = "(+ 1 2)"
-#  input = "(begin (define x 5) (+ x 2))"
-
-#   #input = "(if (= 2 1) 0 (if (= 1 1) 1 2)) "
-# #  #input = "(cons 0 (quote (1 2 3)))"
-# # input = "(quote (1 2 3))"
-# # #input = "(if (= 5 5) (if (= 1 1) 1 2))"
-#    x = Parser.parse(input)
-#    puts x == [:+, 1, 2]
-
-   # val = env.value(Parser.parse(input))
- #puts val.inspect
-  # puts Parser.to_scheme(env.value(Parser.parse(input)))
-
+# #  input = "(define acc (lambda (start)(lambda (supplement)(set! start (+ start supplement))start)))"
+# #  repl.evaluate(input)
+# #  input = "(define A (acc 5))"
+# #  repl.evalutate(input)
+# # input = "(A 10)"
+# # repl.evaluate(input)
+#  puts repl.tree.to_json
