@@ -1,6 +1,6 @@
 require 'sinatra'
 require 'json'
-require_relative 'graph_interpreter'
+require_relative 'label_interpreter'
 
 
 repl = ReplActions.new

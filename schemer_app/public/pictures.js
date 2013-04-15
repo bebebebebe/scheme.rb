@@ -41,11 +41,35 @@
 
       node.append("svg:circle")
 .attr("r", 4)
-// .style("fill", "red");
 .style("fill", "red")
 .on("click", function(d) {      // added click event to print node name to console
     console.log("you clicked " + d.name)
   })
+
+// .on("mouseover", function(d) {
+
+//   var xPosition = parseFloat(d3.select(this).attr("x"));
+//   var yPosition = parseFloat(d3.select(this).attr("y"));
+
+//   svg.append("text")
+//     .attr("id", xPosition)
+//     .attr("x", xPosition)
+//     .attr("y", yPosition)
+//     .attr("text-anchor", "middle")
+//     .attr("font-family", "sans-serif")
+//     .attr("font-size", "11px")
+//     .attr("font-weight", "bold")
+//     .attr("fill", "blozck")
+//     .text(d.frame);
+// })
+// .on("mouseout", function() {
+//     d3.select("#tooltip").remove();
+
+// });
+
+
+
+
 
 .append("title")
 .text(function(d) {

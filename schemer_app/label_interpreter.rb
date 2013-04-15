@@ -2,28 +2,29 @@ require 'json'
 
 module Tree
 
-  def self.mini(frame) # string. represent bindings to lambdas as bindings to the string "lambda"
-    frame2 = frame.dup
-    frame2.each { |k,v| if v.class == Proc then frame2[k] = "lambda" end }.to_s
-  end  
-
-  def self.structure(vertex)
-    {frame: mini(vertex.frame), children: vertex.children.map { |i| structure(i) } }
+  def self.label_structure(vertex)
+    { frame: process_frame(vertex.frame, vertex.label), 
+      children: vertex.children.map{ |i| label_structure(i) } }
   end
 
-  def self.label_structure(vertex)
-    structure(vertex).merge({ name:"global env" })
+  def self.process_frame(frame, label)
+    frame2 = frame.dup
+    frame2.each { |k,v| frame2[k] = schemify(label[k]) if v.class == Proc }.to_s
+  end
+
+  def self.schemify(array)
+    string = array.to_s
+    string.gsub("[", "(").gsub("]",")").gsub(":", "").gsub(",","")
   end
 
 end
 
-
-
 class Environment
-  attr_reader :frame, :outer_env, :children
+  attr_reader :frame, :label, :outer_env, :children
 
   def initialize(frame, outer_env=nil)
     @frame = frame
+    @label = Hash.new
     @outer_env = outer_env
     @children = []
     if outer_env
@@ -70,7 +71,7 @@ class Environment
     case x[0]
       when :define
         frame[x[1]] = value(x[2])
-                
+        label[x[1]] = x[2]                
       when :lambda
         lambda{ |*args| Environment.new(Hash[x[1].zip(args)], self).value(x[2]) }
       when :if
@@ -85,6 +86,7 @@ class Environment
       when :set!
         begin
           env_binding(x[1]).frame[x[1]] = value(x[2])
+          env_bindings(x[1]).label[x[1]] = x[2]
         rescue
           ". . . oops, #{x[1]} can't be set as it isn't defined"
         end
@@ -176,7 +178,6 @@ class Repl
 
   def tree
     Tree.label_structure(root)
-    
   end
 end
 
@@ -206,10 +207,6 @@ class ReplActions
     Tree.label_structure(root)
   end
 
-  # def store(input)
-  #   input
-  # end
-
 end
 
  repl = ReplActions.new
@@ -220,13 +217,15 @@ end
 # input = "(factorial 5)"
 # repl.evaluate(input)
 # env = Environment.global_env
-input = "(define square (lambda (x) (* x x)))"
-# value = Parser.parse(input)
+
+#input = "(define square (lambda (x) (* x x)))"
+#repl.evaluate(input)
+
 # puts value.inspect
-repl.evaluate(input)
+#repl.evaluate(input)
  # #repl.tree.to_json
-input = "(square 5)"
-repl.evaluate(input)
+#input = "(square 5)"
+#repl.evaluate(input)
 
 
 # input = "(define x 5)"
@@ -241,20 +240,20 @@ repl.evaluate(input)
 # input = "(+ 1 2)"
 # repl.evaluate(input)
 
-  # input = "(define acc (lambda (start)(lambda (supplement)(set! start (+ start supplement))start)))"
-  # repl.evaluate(input)
-  # input = "(define A (acc 5))"
-  # repl.evaluate(input)
-  # input = "(A 10)"
-  # repl.evaluate(input)
-  # input = "(A 10)"
-  # repl.evaluate(input)
-  # input = "(define B (acc 0))"
-  # repl.evaluate(input)
-  # input = "(B 1)"
-  # repl.evaluate(input)
-  # input = "(B 2)"
-  # repl.evaluate (input)
-  # input = "(A 10)"
-  # repl.evaluate(input)
+  input = "(define acc (lambda (start)(lambda (supplement)(set! start (+ start supplement))start)))"
+  repl.evaluate(input)
+  input = "(define A (acc 5))"
+  repl.evaluate(input)
+  input = "(A 10)"
+  repl.evaluate(input)
+  input = "(A 10)"
+  repl.evaluate(input)
+  input = "(define B (acc 0))"
+  repl.evaluate(input)
+  input = "(B 1)"
+  repl.evaluate(input)
+  input = "(B 2)"
+  repl.evaluate (input)
+  input = "(A 10)"
+  repl.evaluate(input)
   puts repl.tree.to_json
