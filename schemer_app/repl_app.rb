@@ -1,9 +1,9 @@
 require 'sinatra'
 require 'json'
-require_relative 'label_interpreter'
+require_relative 'visual_interpreter'
 
 
-repl = ReplActions.new
+repl = Repl.new
 
 get '/' do
   redirect '/form'

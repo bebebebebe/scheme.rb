@@ -2,9 +2,9 @@ require 'json'
 
 module Tree
 
-  def self.label_structure(vertex)
+  def self.structure(vertex)
     { frame: process_frame(vertex.frame, vertex.label), 
-      children: vertex.children.map{ |i| label_structure(i) } }
+      children: vertex.children.map{ |i| structure(i) } }
   end
 
   def self.process_frame(frame, label)
@@ -150,7 +150,7 @@ module Parser
 end
 
 
-class ReplActions
+class Repl
   attr_reader :env, :root
 
   def initialize
@@ -176,25 +176,25 @@ class ReplActions
   end
 
   def tree
-    Tree.label_structure(root)
+    Tree.structure(root)
   end
 
 end
 
- repl = ReplActions.new
+#  repl = ReplActions.new
 
-# input = "(define fact-iter (lambda (product counter max-count) (if (> counter max-count) product (fact-iter (* counter product) (+ counter 1) max-count))))"
+# # input = "(define fact-iter (lambda (product counter max-count) (if (> counter max-count) product (fact-iter (* counter product) (+ counter 1) max-count))))"
 
-# repl.evaluate(input)
-# input = "(define factorial (lambda (n) (fact-iter 1 1 n)))"
-# input = "(factorial 5)"
-# repl.evaluate(input)
-# env = Environment.global_env
+# # repl.evaluate(input)
+# # input = "(define factorial (lambda (n) (fact-iter 1 1 n)))"
+# # input = "(factorial 5)"
+# # repl.evaluate(input)
+#  env = Environment.global_env
 
-#input = "(define square (lambda (x) (* x x)))"
-#repl.evaluate(input)
-
-# puts value.inspect
+# input = "(define square (lambda (x) (* x x)))"
+# #repl.evaluate(input)
+# value = env.value(input)
+#  puts value.inspect
 #repl.evaluate(input)
  # #repl.tree.to_json
 #input = "(square 5)"
@@ -213,20 +213,20 @@ end
 # input = "(+ 1 2)"
 # repl.evaluate(input)
 
-  input = "(define acc (lambda (start)(lambda (supplement)(set! start (+ start supplement))start)))"
-  repl.evaluate(input)
-  input = "(define A (acc 5))"
-  repl.evaluate(input)
-  input = "(A 10)"
-  repl.evaluate(input)
-  input = "(A 10)"
-  repl.evaluate(input)
-  input = "(define B (acc 0))"
-  repl.evaluate(input)
-  input = "(B 1)"
-  repl.evaluate(input)
-  input = "(B 2)"
-  repl.evaluate (input)
-  input = "(A 10)"
-  repl.evaluate(input)
-  puts repl.tree.to_json
+  # input = "(define acc (lambda (start)(lambda (supplement)(set! start (+ start supplement))start)))"
+  # repl.evaluate(input)
+  # input = "(define A (acc 5))"
+  # repl.evaluate(input)
+  # input = "(A 10)"
+  # repl.evaluate(input)
+  # input = "(A 10)"
+  # repl.evaluate(input)
+  # input = "(define B (acc 0))"
+  # repl.evaluate(input)
+  # input = "(B 1)"
+  # repl.evaluate(input)
+  # input = "(B 2)"
+  # repl.evaluate (input)
+  # input = "(A 10)"
+  # repl.evaluate(input)
+  # puts repl.tree.to_json
