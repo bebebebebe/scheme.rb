@@ -1,7 +1,9 @@
 require 'sinatra'
 require 'json'
-require_relative 'visual_interpreter'
-
+require_relative './visual_interpreter/environment'
+require_relative './visual_interpreter/parser'
+require_relative './visual_interpreter/tree'
+require_relative './visual_interpreter/repl'
 
 repl = Repl.new
 

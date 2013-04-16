@@ -1,21 +1,9 @@
-require_relative 'graph_interpreter.rb'
+require_relative '../environment'
 require 'minitest/autorun'
 
 class InterpreterTest < MiniTest::Unit::TestCase
 
-########### Tree module
-  def test_structure
-    env1 = Environment.new({ x:4 })
-    env2 = Environment.new({}, env1)
-    env3 = Environment.new({}, env2)
-    assert_equal(Tree.structure(env1), {frame: { x:4 }, children: [{ frame: {}, children: [{frame: {}, children: []}] }] })
-  end
 
-# def structure(vertex)
-#     {frame: vertex.frame, children: vertex.children.map { |i| tree(i) } }
-#   end
-
-########### 
 
   def test_env_binding
     env1 = Environment.new({ x:4, y:5 })
@@ -34,11 +22,7 @@ class InterpreterTest < MiniTest::Unit::TestCase
   end
 
 
-  # def printable?(x)
-  #   (x[0] != :define) and (x[0] =! :set) and (x[0] =! :lambda)
-  # end
-
-########### Environmnet.value
+########### value
 
   def test_value_variable
     env = Environment.new({ x:1 })
@@ -88,13 +72,5 @@ class InterpreterTest < MiniTest::Unit::TestCase
     f = env1.value(exp)
     assert_equal(f.call(2,3),5)
    end
-
-########### Parser
-
-########### ReplActions
-
-
-  
-
 
 end
