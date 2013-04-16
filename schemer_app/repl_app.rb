@@ -20,13 +20,13 @@ post '/form' do
     value = repl.evaluate(new_input)
 
     print_status = repl.print_status(new_input)
-    value_scheme = repl.printing
+    output = repl.printing
     treeData = repl.tree
  
-    if print_status or (value_scheme[0..4] == ". . .")
-      { error: false, value: value_scheme, tree: treeData, returnValue: value_scheme}.to_json
+    if print_status or (output[0..4] == ". . .")
+      { error: false, value: output, tree: treeData, returnValue: output}.to_json
     else
-      { error: false, value: value_scheme, tree: treeData, returnVaule: nil}.to_json
+      { error: false, value: output, tree: treeData, returnVaule: nil}.to_json
     end
   rescue
     { error: false, value: nil, returnValue: ". . . oops, syntax error"}.to_json

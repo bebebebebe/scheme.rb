@@ -9,7 +9,8 @@ module Tree
 
   def self.process_frame(frame, label)
     frame2 = frame.dup
-    frame2.each { |k,v| frame2[k] = schemify(label[k]) if v.class == Proc }.to_s
+    string = frame2.each { |k,v| frame2[k] = schemify(label[k]) if v.class == Proc }.to_s
+    string.gsub('"', '').gsub(":", "").gsub("=>", ": ")
   end
 
   def self.schemify(array)
@@ -148,40 +149,6 @@ module Parser
 
 end
 
-class Repl
-  attr_reader :input, :env, :root
-
-  def initialize
-   @env = Environment.global_env
-   @root = env
-  end
-
-  def prompt
-    print "schemerB> "
-  end
-
-  def read
-    @input = gets.chomp
-  end
-
-  def evaluate
-    @value = env.value(Parser.parse(input))
-  end
-
-  def print_status(input) # true or false
-    env.printable?(Parser.parse(input))    
-  end
-
-  def printing
-    puts Parser.to_scheme(@value)
-  end
-
-  def tree
-    Tree.label_structure(root)
-  end
-end
-
-#############      for sinatra app
 
 class ReplActions
   attr_reader :env, :root
@@ -199,8 +166,13 @@ class ReplActions
     env.printable?(Parser.parse(input))
   end
 
-  def printing    
-    Parser.to_scheme(@value)
+  def printing
+    if @value.class == Proc
+      to_print = "* procedure *"
+    else 
+      to_print = Parser.to_scheme(@value)
+    end
+    to_print
   end
 
   def tree
@@ -210,6 +182,7 @@ class ReplActions
 end
 
  repl = ReplActions.new
+
 # input = "(define fact-iter (lambda (product counter max-count) (if (> counter max-count) product (fact-iter (* counter product) (+ counter 1) max-count))))"
 
 # repl.evaluate(input)
