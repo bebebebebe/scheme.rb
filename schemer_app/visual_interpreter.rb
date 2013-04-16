@@ -41,6 +41,7 @@ class Environment
                     :+ => lambda{|x,y| x + y},
                     :- => lambda{|x,y| x - y},
                     :* => lambda{|x,y| x * y},
+                    :/ => lambda{|x,y| x / y},
                     :** => lambda{|x,y| x ** y},
                     :"=" => lambda{|x,y| x == y},
                     :">" => lambda{|x,y| x > y},
@@ -189,9 +190,12 @@ end
 # # input = "(define factorial (lambda (n) (fact-iter 1 1 n)))"
 # # input = "(factorial 5)"
 # # repl.evaluate(input)
-#  env = Environment.global_env
+ # env = Environment.global_env
 
-# input = "(define square (lambda (x) (* x x)))"
+ input = "(define square (lambda (x) (* x x)))"
+
+puts Parser.parse(input).inspect
+
 # #repl.evaluate(input)
 # value = env.value(input)
 #  puts value.inspect
