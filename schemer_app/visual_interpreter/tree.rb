@@ -1,8 +1,8 @@
 module Tree
 
-  def self.structure(vertex)
-    { frame: process_frame(vertex.frame, vertex.label), 
-      children: vertex.children.map{ |i| structure(i) } }
+  def self.structure(root)
+    { frame: process_frame(root.frame, root.label), 
+      children: root.children.map{ |i| structure(i) } }
   end
 
   def self.process_frame(frame, label)
