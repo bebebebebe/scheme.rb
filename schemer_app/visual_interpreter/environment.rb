@@ -38,37 +38,42 @@ class Environment
 
   def value(x)
     if x.is_a? Symbol # x is a variable
-      return env_binding(x).frame[x]
-    elsif x.is_a? Array
-      case x[0]
-      when :define
-        frame[x[1]] = value(x[2])
-        label[x[1]] = x[2]
-      when :lambda
-        lambda{ |*args| Environment.new(Hash[x[1].zip(args)], self).value(x[2]) }
-      when :if
-        value(x[1]) == true ? value(x[2]) : value(x[3])
-      when :quote
-        x[1]
-      when :begin
-        for exp in x.drop(1) do
-          value(exp)
-        end
-          return value(x.last)
-      when :set!
-        begin
-          env_binding(x[1]).frame[x[1]] = value(x[2])
-          env_bindings(x[1]).label[x[1]] = x[2]
-        rescue
-          ". . . oops, #{x[1]} can't be set as it isn't defined"
-        end
-      else
-        values = x.map{ |exp| value(exp) }
-        values[0].call(*values.drop(1))
-      end
+      env_binding(x).frame[x]
+    elsif x.is_a? Array # x is an s-expression
+      evaluate_s_expression(x)
     else # x is an atom
       return x
     end
   end
 
+  private
+
+  def evaluate_s_expression(x)
+    case x[0]
+    when :define
+      frame[x[1]] = evaluate(x[2])
+      label[x[1]] = x[2]
+    when :lambda
+      lambda{ |*args| Environment.new(Hash[x[1].zip(args)], self).evaluate(x[2]) }
+    when :if
+      evaluate(x[1]) == true ? evaluate(x[2]) : evaluate(x[3])
+    when :quote
+      x[1]
+    when :begin
+      for exp in x.drop(1) do
+        evaluate(exp)
+      end
+      evaluate(x.last)
+    when :set!
+      begin
+        env_binding(x[1]).frame[x[1]] = value(x[2])
+        env_bindings(x[1]).label[x[1]] = x[2]
+      rescue
+        ". . . oops, #{x[1]} can't be set as it isn't defined"
+      end
+    else
+      values = x.map{ |exp| evaluate(exp) }
+      values[0].call(*values.drop(1))
+    end
+  end
 end
