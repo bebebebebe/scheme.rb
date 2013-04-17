@@ -11,9 +11,11 @@ module Tree
     string.gsub('"', '').gsub(":", "").gsub("=>", ": ")
   end
 
-  def self.schemify(array)
-    string = array.to_s
-    string.gsub("[", "(").gsub("]",")").gsub(":", "").gsub(",","")
+  def self.schemify(exp)
+    if exp.is_a? Array
+      '(' + exp.map{ |x| to_scheme(x) }.join(' ') + ')'
+    else exp.to_s
+    end
   end
 
 end
