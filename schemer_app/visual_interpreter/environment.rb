@@ -75,7 +75,7 @@ class Environment
       else
         ". . . oops, #{x[1]} can't be set as it isn't defined"
       end
-    else
+    else # run fn
       values = x.map{ |exp| evaluate(exp) }
       values[0].call(*values.drop(1))
     end
