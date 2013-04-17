@@ -1,6 +1,8 @@
 class Environment
   attr_reader :frame, :label, :outer_env, :children
 
+  class UnboundVariable < StandardError; end
+
   def initialize(frame, outer_env=nil)
     @frame = frame
     @label = Hash.new
@@ -13,25 +15,26 @@ class Environment
   end
 
   def self.global_env
-    Environment.new({:car => lambda{|lat| lat[0]},
-                    :cdr => lambda{|lat| lat.drop(1)},
-                    :cons => lambda{|a, lat| [a] + lat},
-                    :+ => lambda{|x,y| x + y},
-                    :- => lambda{|x,y| x - y},
-                    :* => lambda{|x,y| x * y},
-                    :/ => lambda{|x,y| x / y},
-                    :** => lambda{|x,y| x ** y},
-                    :"=" => lambda{|x,y| x == y},
-                    :">" => lambda{|x,y| x > y},
-                    :"<" => lambda{|x,y| x < y}
-   
-                     })
+    Environment.new :car  => lambda {|lat| lat[0]},
+                    :cdr  => lambda {|lat| lat.drop(1)},
+                    :cons => lambda {|a, lat| [a] + lat},
+                    :+    => lambda {|x,y| x + y},
+                    :-    => lambda {|x,y| x - y},
+                    :*    => lambda {|x,y| x * y},
+                    :/    => lambda {|x,y| x / y},
+                    :**   => lambda {|x,y| x ** y},
+                    :"="  => lambda {|x,y| x == y},
+                    :">"  => lambda {|x,y| x > y},
+                    :"<"  => lambda {|x,y| x < y}
   end
 
   def env_binding(var) # the environment that binds variable var
     if frame.has_key?(var)
       self
-    else outer_env.env_binding(var)
+    elsif outer_env
+      outer_env.env_binding(var)
+    else
+      raise UnboundVariable, "The variale `#{var}' has no value in this context!"
     end
   end
 
@@ -40,14 +43,8 @@ class Environment
   end
 
   def value(x)
-    if x.is_a? Symbol # x is a variable
-      return env_binding(x).frame[x]
-    else
-    end
-    if not x.is_a? Array # x is an atom
-      return x
-    else
-    end
+    return env_binding(x).frame[x] if x.is_a? Symbol # x is a variable
+    return x if not x.is_a? Array # x is an atom
     case x[0]
       when :define
         frame[x[1]] = value(x[2])
@@ -55,14 +52,15 @@ class Environment
       when :lambda
         lambda{ |*args| Environment.new(Hash[x[1].zip(args)], self).value(x[2]) }
       when :if
-        value(x[1]) == true ? value(x[2]) : value(x[3])
+        value(x[1]) ? value(x[2]) : value(x[3])
       when :quote 
         x[1]
       when :begin
+        ret = nil
         for exp in x.drop(1) do
-          value(exp)
+          ret = value(exp)
         end 
-          return value(x.last)
+        ret
       when :set!
         begin
           env_binding(x[1]).frame[x[1]] = value(x[2])

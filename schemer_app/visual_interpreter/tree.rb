@@ -7,13 +7,16 @@ module Tree
 
   def self.process_frame(frame, label)
     frame2 = frame.dup
-    string = frame2.each { |k,v| frame2[k] = schemify(label[k]) if v.class == Proc }.to_s
+    string = frame2.each { |k,v| frame2[k] = schemify(label[k]) if v.is_a? Proc }.to_s
     string.gsub('"', '').gsub(":", "").gsub("=>", ": ")
   end
 
   def self.schemify(array)
-    string = array.to_s
-    string.gsub("[", "(").gsub("]",")").gsub(":", "").gsub(",","")
+    if array.is_a? Array
+      "(#{array.map {|e| schemify e}.join ?\s})"
+    else
+      array.to_s
+    end
   end
 
 end
