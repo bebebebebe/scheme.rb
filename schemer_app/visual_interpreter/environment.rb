@@ -51,10 +51,11 @@ class Environment
       when :quote 
         x[1]
       when :begin
+        result = nil
         for exp in x.drop(1) do
-          value(exp)
-        end 
-          return value(x.last)
+          result = value(exp)
+        end
+        result 
       when :set!
         begin
           env_binding(x[1]).frame[x[1]] = value(x[2])
