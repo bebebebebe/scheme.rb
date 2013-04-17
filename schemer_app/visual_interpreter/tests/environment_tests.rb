@@ -59,6 +59,12 @@ class InterpreterTest < MiniTest::Unit::TestCase
     assert_equal(env1.frame[:y], 1)
   end
 
+  def test_value_set_returns_error_if_var_undefined
+    env1 = Environment.new({ x:4 })
+    exp1 = [:set!, :y, 1]
+    assert_equal(env1.evaluate(exp1), ". . . oops, y can't be set as it isn't defined")
+  end
+
   def test_value_begin
     env1 = Environment.global_env
     exp = [:begin, [:define, :x, 1], [:+, :x, 1]]
