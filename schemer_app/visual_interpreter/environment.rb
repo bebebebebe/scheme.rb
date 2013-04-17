@@ -64,7 +64,7 @@ class Environment
     when :quote
       x[1]
     when :begin
-      for exp in x.drop(1) do
+      x.drop(1).each do |exp|
         evaluate(exp)
       end
       evaluate(x.last)
