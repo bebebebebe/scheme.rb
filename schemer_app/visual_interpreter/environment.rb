@@ -42,7 +42,7 @@ class Environment
     elsif x.is_a? Array # x is an s-expression
       evaluate_s_expression(x)
     else # x is an atom
-      return x
+      x
     end
   end
 
