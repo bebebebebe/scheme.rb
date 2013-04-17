@@ -42,11 +42,9 @@ class Environment
   def value(x)
     if x.is_a? Symbol # x is a variable
       return env_binding(x).frame[x]
-    else
     end
     if not x.is_a? Array # x is an atom
       return x
-    else
     end
     case x[0]
       when :define
