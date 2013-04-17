@@ -8,7 +8,7 @@ module Tree
   def self.process_frame(frame, label)
     frame2 = frame.dup
     string = frame2.each { |k,v| frame2[k] = schemify(label[k]) if v.is_a? Proc }.to_s
-    string.gsub('"', '').gsub(":", "").gsub("=>", ": ")
+    string.delete('":').gsub("=>", ": ")
   end
 
   def self.schemify(array)
