@@ -29,10 +29,7 @@ class Environment
   end
 
   def env_binding(var) # the environment that binds variable var
-    if frame.has_key?(var)
-      self
-    else outer_env.env_binding(var)
-    end
+    frame.has_key?(var) ? self : outer_env.env_binding(var)
   end
 
   def printable?(x)
