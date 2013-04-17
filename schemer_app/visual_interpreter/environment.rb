@@ -33,7 +33,7 @@ class Environment
     elsif outer_env
       outer_env.env_binding(var)
     else
-      raise UnboundVariable, "The variale `#{var}' has no value in this context!"
+      raise UnboundVariable, "The variable `#{var}' has no value in this context!"
     end
   end
 
@@ -64,7 +64,7 @@ class Environment
         begin
           env_binding(x[1]).frame[x[1]] = value(x[2])
           env_bindings(x[1]).label[x[1]] = x[2]
-        rescue
+        rescue UnboundVariable
           ". . . oops, #{x[1]} can't be set as it isn't defined"
         end
       else
