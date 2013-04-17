@@ -54,7 +54,8 @@ class InterpreterTest < MiniTest::Unit::TestCase
     env2 = Environment.new({ x:2 }, env1)
     exp1 = [:set!, :x, 1]
     exp2 = [:set!, :y, 1]
-    env2.evaluate(exp1); env2.evaluate(exp2)
+    env2.evaluate(exp1)
+    env2.evaluate(exp2)
     assert_equal(env1.frame[:x], 4)
     assert_equal(env1.frame[:y], 1)
   end
