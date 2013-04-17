@@ -36,7 +36,7 @@ class Environment
     x[0] != :define && x[0] != :set! && x[0] != :lambda
   end
 
-  def value(x)
+  def evaluate(x)
     if x.is_a? Symbol # x is a variable
       env_binding(x).frame[x]
     elsif x.is_a? Array # x is an s-expression
