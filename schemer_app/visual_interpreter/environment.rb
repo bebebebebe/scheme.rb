@@ -36,7 +36,7 @@ class Environment
   end
 
   def printable?(x)
-    (x[0] != :define) and (x[0] != :set!) and (x[0] != :lambda)
+    x[0] != :define && x[0] != :set! && x[0] != :lambda
   end
 
   def value(x)
