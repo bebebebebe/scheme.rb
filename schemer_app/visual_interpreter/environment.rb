@@ -24,7 +24,7 @@ class Environment
                     :"=" => lambda{|x,y| x == y},
                     :">" => lambda{|x,y| x > y},
                     :"<" => lambda{|x,y| x < y}
-   
+
                      })
   end
 
@@ -51,17 +51,17 @@ class Environment
     case x[0]
       when :define
         frame[x[1]] = value(x[2])
-        label[x[1]] = x[2]                
+        label[x[1]] = x[2]
       when :lambda
         lambda{ |*args| Environment.new(Hash[x[1].zip(args)], self).value(x[2]) }
       when :if
         value(x[1]) == true ? value(x[2]) : value(x[3])
-      when :quote 
+      when :quote
         x[1]
       when :begin
         for exp in x.drop(1) do
           value(exp)
-        end 
+        end
           return value(x.last)
       when :set!
         begin
@@ -72,7 +72,7 @@ class Environment
         end
       else
         values = x.map{ |exp| value(exp) }
-        values[0].call(*values.drop(1))        
+        values[0].call(*values.drop(1))
     end
   end
 
