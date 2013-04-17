@@ -73,4 +73,12 @@ class InterpreterTest < MiniTest::Unit::TestCase
     assert_equal(f.call(2,3),5)
    end
 
+  #### labels
+
+  def test_value_set_label
+    env1 = Environment.new({ x:4, y:5 })
+    exp1 = [:set!, :x, 1]
+    env1.evaluate(exp1)
+    assert_equal(env1.label[:x], 1)
+  end
 end
