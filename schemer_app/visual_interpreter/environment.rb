@@ -39,7 +39,9 @@ class Environment
 
   def value(x)
     return env_binding(x).frame[x] if x.is_a? Symbol # x is a variable
-    return x if not x.is_a? Array # x is an atom
+
+    #return x if not x.is_a? Array # x is an atom
+    if x.is_a? Array
     case x[0]
       when :define
         frame[x[1]] = value(x[2])
@@ -55,7 +57,7 @@ class Environment
         for exp in x.drop(1) do
           result = value(exp)
         end
-        result 
+        result
       when :set!
         begin
           env_binding(x[1]).frame[x[1]] = value(x[2])
@@ -66,6 +68,8 @@ class Environment
       else
         values = x.map{ |exp| value(exp) }
         values[0].call(*values.drop(1))        
+    end
+    else x # x is an atom
     end
   end
 
