@@ -56,10 +56,10 @@ class Environment
         end
         result
       when :set!
-        begin
+        if env_binding(x[1])
           env_binding(x[1]).frame[x[1]] = evaluate(x[2])
           env_binding(x[1]).label[x[1]] = x[2]
-        rescue
+        else
           ". . . oops, #{x[1]} can't be set as it isn't defined"
         end
       else
