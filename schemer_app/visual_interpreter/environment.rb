@@ -1,7 +1,12 @@
 class Environment
-  attr_reader :frame, :label, :outer_env, :children
+  attr_reader :frame, :label, :outer_env, :children, :id
+
+  @@id_counter = 0
 
   def initialize(frame, outer_env=nil)
+    @id = @@id_counter
+    @@id_counter += 1
+
     @frame = frame
     @label = Hash.new
     @outer_env = outer_env
@@ -56,10 +61,10 @@ class Environment
         end
         result
       when :set!
-        if env_binding(x[1])
+        begin
           env_binding(x[1]).frame[x[1]] = evaluate(x[2])
           env_binding(x[1]).label[x[1]] = x[2]
-        else
+        rescue
           ". . . oops, #{x[1]} can't be set as it isn't defined"
         end
       else
