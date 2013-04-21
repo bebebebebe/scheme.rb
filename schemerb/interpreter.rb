@@ -61,15 +61,15 @@ class Environment
         for exp in x.drop(1) do
           value(exp)
         end
-          return value(x.last)
+        value(x.last)
       when :set! 
         begin
           env_binding(x[1]).frame[x[1]] = value(x[2])
         rescue 
           ". . . oops, #{x[1]} can't be set as it isn't defined"
         end
-      when :write
-        @user_input = x[1..-1].join(" ")     
+      # when :write
+      #   @user_input = x[1..-1].join(" ")     
       else values = x.map{ |exp| value(exp) }
         values[0].call(*values.drop(1))
     end
@@ -147,26 +147,10 @@ class Repl
   def printing
     puts Parser.to_scheme(@value)
   end
+  
 end
 
-#############      for sinatra app
 
-class ReplActions
-  attr_reader :env
-
-  def initialize
-    @env = Environment.global_env
-  end
-
-  def evaluate(input)
-    @value = env.value(Parser.parse(input))
-  end
-
-  def printing
-    Parser.to_scheme(@value)
-  end
-
-  end
 
 
 
