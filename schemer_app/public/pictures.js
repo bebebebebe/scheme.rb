@@ -31,18 +31,17 @@
                 .enter().append("svg:g")
                 .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
 
-
       node.append("svg:circle")
             .on("mouseover", mouseover)
             .on("mousemove", function(d){mousemove(d);})
             .on("mouseout", mouseout)
             .attr("fill","red")
-            .attr("r", 5.5);
+            .attr("r", 4.5);
  
             function mouseover() {
                 div.transition()
                 .duration(300)
-                .style("opacity", 1);
+                .style("opacity", 0.8);
             }
  
             function mousemove(d) {
@@ -59,23 +58,17 @@
             };
 
 
+
       // node.append("svg:circle")
       //           .attr("r", 4)
       //           .style("fill", "red")
       //           .on("click", function(d) {      // added click event to print node name to console
       //               console.log("you clicked " + d.name)
       //             })
-
-
-
-
-
-// .append("title")
-// .text(function(d) {
-//         return d.frame;
-//       });
-
-
+      // .append("title")
+      // .text(function(d) {
+      //         return d.frame;
+      //       });
 
 };
 })(this);

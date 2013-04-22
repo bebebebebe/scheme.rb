@@ -2,29 +2,32 @@
 
 
 .link {
-        fill: none;
-        stroke: #ccc;
-       stroke-width: 1.5px;
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
     }
 
 
 div.tooltip {
-                position: absolute;
-                text-align: center;
-                width: 200px;
-                height: 20px;
-                padding: 8px;
-                font: 14px sans-serif;
-                background: lightsteelblue;
-                border: none;
-                border-radius: 8px;
-                pointer-events: none;
+    position: absolute;
+    text-align: center;
+    width: 200px;
+    height: 20px;
+    padding: 8px;
+    font: 14px sans-serif;
+    background: white;
+    text-align: left;
+    /*background: lightsteelblue;*/
+    /*opacity: 0.50;*/
+    border: none;
+    border-radius: 8px;
+    pointer-events: none;
             }
 
 
 
 
-/*console*/
+/*    console    */
 
 #console {
  width:500px;
