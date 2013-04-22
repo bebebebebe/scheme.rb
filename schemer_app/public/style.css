@@ -1,3 +1,31 @@
+/*    for pictures.js    */
+
+
+.link {
+        fill: none;
+        stroke: #ccc;
+       stroke-width: 1.5px;
+    }
+
+
+div.tooltip {
+                position: absolute;
+                text-align: center;
+                width: 200px;
+                height: 20px;
+                padding: 8px;
+                font: 14px sans-serif;
+                background: lightsteelblue;
+                border: none;
+                border-radius: 8px;
+                pointer-events: none;
+            }
+
+
+
+
+/*console*/
+
 #console {
  width:500px;
  height: 220px;
