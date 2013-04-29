@@ -6,18 +6,9 @@ require_relative './lib/environment'
 require_relative './lib/parser'
 require_relative './lib/tree'
 
-#use Rack::Session::Cookie, :expire_after => 2592000 #30 days in seconds
-# use Rack::Session::Cookie, :key => 'rack.session',
-#                            :domain => 'http://visual-schemer.herokuapp.com/',
-#                            :path => '/',
-#                            :expire_after => 2592000 # 30 days, in seconds
-
-
 enable :sessions
 
-
 repl_db = {}
-
 
 get '/' do
   session[:id] = SecureRandom.uuid
@@ -32,11 +23,9 @@ post '/form' do
     new_input = params[:message]
     begin
       value = repl_db[session[:id]].evaluate(new_input)
-
       print_status = repl_db[session[:id]].print_status(new_input)
       output = repl_db[session[:id]].printing
-      treeData = repl_db[session[:id]].tree
-   
+      treeData = repl_db[session[:id]].tree   
       if print_status or (output[0..4] == ". . .")
         { error: false, value: output, tree: treeData, returnValue: output, session_ids: repl_db.keys.inspect }.to_json
       else
@@ -47,19 +36,3 @@ post '/form' do
     end
   end
 end
-
-
-# post '/form' do
-#   new_input = params[:message]
-#   begin
-#     new_value = repl.evaluate(new_input)
-#     new_value_scheme = repl.printing
-#     inputs << ("> " + params[:message]) #echoes user input
-#     inputs << ("=> " + new_value_scheme)
-#   rescue 
-#     inputs << ". . . oops, syntax error"
-#   end
-#   @inputs = inputs
-#   @tree = GRAPH.to_json
-#   erb :index
-# end
