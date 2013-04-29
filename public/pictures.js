@@ -44,20 +44,19 @@
             function mouseover() {
                 div.transition()
                 .duration(300)
-                .style("opacity", 0.8);
+                .style("opacity", 0.9);
             }
  
             function mousemove(d) {
                 div
                 //.text(d.frame)
-                .html("bindings:" + "<br>" + d.frame)
-                .style("left", (d3.event.pageX ) + "px")
-                .style("top", (d3.event.pageY) + "px");
-                 
-                // .style("left", (d3.event.pageX ) + "px")
-                // .style("top", (d3.event.pageY) + "px");
+                //.html("Bindings" + "<br>" + d.frame)
+                .html(d.frame)
+                .style("color", "darkblue")
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY) + "px");      
             }
- 
+
             function mouseout() {
                 div.transition()
                 .duration(300)
@@ -66,7 +65,7 @@
 
 
 
-      // node.append("svg:circle")
+      //node.append("svg:circle")
       //           .attr("r", 4)
       //           .style("fill", "red")
       //           .on("click", function(d) {      // added click event to print node name to console
