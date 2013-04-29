@@ -1,10 +1,10 @@
 require 'sinatra'
 require 'securerandom'
 require 'json'
-require_relative './visual_interpreter/repl'
-require_relative './visual_interpreter/environment'
-require_relative './visual_interpreter/parser'
-require_relative './visual_interpreter/tree'
+require_relative './lib/repl'
+require_relative './lib/environment'
+require_relative './lib/parser'
+require_relative './lib/tree'
 
 
 enable :sessions
