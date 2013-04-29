@@ -10,7 +10,7 @@ require_relative './lib/tree'
 use Rack::Session::Cookie, :key => 'rack.session',
                            :domain => 'http://visual-schemer.herokuapp.com/',
                            :path => '/',
-                           :expire_after => 2592000, # 30 days, in seconds
+                           :expire_after => 2592000 # 30 days, in seconds
 
 
 #enable :sessions
