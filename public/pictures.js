@@ -7,7 +7,7 @@
                 .append("svg:g")
                 .attr("transform", "translate(40, 0)");
 
-      // tooltips
+      //tooltips
       var div = d3.select("body").append("div")
                 .attr("class", "tooltip")
                 .style("opacity", 1e-6);
@@ -46,9 +46,13 @@
  
             function mousemove(d) {
                 div
-                .text(d.frame)
+                //.text(d.frame)
+                .html("bindings:" + "<br>" + d.frame)
                 .style("left", (d3.event.pageX ) + "px")
                 .style("top", (d3.event.pageY) + "px");
+                 
+                // .style("left", (d3.event.pageX ) + "px")
+                // .style("top", (d3.event.pageY) + "px");
             }
  
             function mouseout() {

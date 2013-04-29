@@ -7,6 +7,11 @@
     stroke-width: 1.5px;
     }
 
+.node {
+  stroke: red;
+  stroke-width: 2px;
+}
+
 
 div.tooltip {
     position: absolute;
@@ -15,6 +20,7 @@ div.tooltip {
     height: 20px;
     padding: 8px;
     font: 14px sans-serif;
+    font-weight: 900;
     background: white;
     text-align: left;
     /*background: lightsteelblue;*/

@@ -1,7 +1,3 @@
-#require_relative 'environment'
-#require_relative 'parser'
-#require_relative 'tree'
-
 class Repl
   attr_reader :env, :root
 
@@ -11,7 +7,7 @@ class Repl
   end
 
   def evaluate(input)
-    @value = env.value(Parser.parse(input))
+    @value = env.evaluate(Parser.parse(input))
   end
 
   def print_status(input) # true or false

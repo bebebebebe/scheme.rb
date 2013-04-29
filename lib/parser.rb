@@ -40,7 +40,7 @@ module Parser
 
   def self.to_scheme(exp)
     if exp.is_a? Array
-      '(' + exp.map{ |x| x.to_s}.join(' ') + ')'
+      '(' + exp.map{ |x| x.to_s }.join(' ') + ')'
     else exp.to_s
     end
   end

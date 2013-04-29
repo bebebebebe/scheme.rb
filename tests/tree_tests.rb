@@ -8,7 +8,8 @@ class InterpreterTest < MiniTest::Unit::TestCase
     env1 = Environment.new({ x:4 })
     env2 = Environment.new({}, env1)
     env3 = Environment.new({}, env2)
-    assert_equal(Tree.structure(env1), {frame: "{x: 4}", children: [{ frame: "{}", children: [{frame: "{}", children: []}] }] })
+    assert_equal(Tree.structure(env1), 
+      {frame: "{x: 4}", children: [{ frame: "{}", children: [{frame: "{}", children: []}] }] })
   end
 
   def test_process_frame

@@ -3,7 +3,8 @@ module Tree
   def self.structure(root)
     { id: root.id,
       frame: process_frame(root.frame, root.label), 
-      children: root.children.map{ |i| structure(i) } }
+      children: root.children.map{ |i| structure(i) }}
+      
   end
 
   def self.process_frame(frame, label)

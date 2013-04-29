@@ -32,7 +32,7 @@ post '/form' do
       treeData = repl_db[session[:id]].tree
    
       if print_status or (output[0..4] == ". . .")
-        { error: false, value: output, tree: treeData, returnValue: output}.to_json
+        { error: false, value: output, tree: treeData, returnValue: output, session_ids: repl_db.keys.inspect }.to_json
       else
         { error: false, value: output, tree: treeData, returnVaule: nil}.to_json
       end

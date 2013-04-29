@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>D3: tree layout</title>
+    <script type="text/javascript" src="d3.v3.js"></script>
+    <script>src="pictures.js"</script>
+
+    <style>
+      .link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 2px;
+      }
+       div.tooltip {
+                position: absolute;
+                text-align: center;
+                width: 200px;
+                height: 20px;
+                padding: 8px;
+                font: 14px sans-serif;
+                background: lightsteelblue; /*#ffff99;*/
+                border: none; /*solid 1px #aaa;*/
+                border-radius: 8px;
+                pointer-events: none;
+                
+            }
+    </style>
+  </head>
+  <body>
+
+
+    <div id="viz"></div>
+
+    <script type="text/javascript">
+
+    var treeData = {"frame":"{car: , cdr: , cons: , +: , -: , *: , **: , =: , >: , <: , acc: (lambda (start) (lambda (supplement) (set! start (+ start supplement)) start)), A: (acc 5), B: (acc 0)}","children":[{"frame":"{start: 35}","children":[{"frame":"{supplement: 10}","children":[]},{"frame":"{supplement: 10}","children":[]},{"frame":"{supplement: 10}","children":[]}]},{"frame":"{start: 3}","children":[{"frame":"{supplement: 1}","children":[]},{"frame":"{supplement: 2}","children":[]}]}]};
+
+    var treeData6 = {"frame":"{:car=>\"lambda\", :cdr=>\"lambda\", :cons=>\"lambda\", :+=>\"lambda\", :-=>\"lambda\", :*=>\"lambda\", :**=>\"lambda\", :\"=\"=>\"lambda\", :>=>\"lambda\", :<=>\"lambda\", :acc=>\"lambda\", :A=>\"lambda\", :B=>\"lambda\"}","children":[{"frame":"{:start=>35}","children":[{"frame":"{:supplement=>10}","children":[]},{"frame":"{:supplement=>10}","children":[]},{"frame":"{:supplement=>10}","children":[]}]},{"frame":"{:start=>3}","children":[{"frame":"{:supplement=>1}","children":[]},{"frame":"{:supplement=>2}","children":[]}]}],"name":"global env"};
+
+
+    var treeData5 = {"frame":"{:car=>\"lambda\", :cdr=>\"lambda\", :cons=>\"lambda\", :+=>\"lambda\", :-=>\"lambda\", :*=>\"lambda\", :**=>\"lambda\", :\"=\"=>\"lambda\", :>=>\"lambda\", :<=>\"lambda\", :\"fact-iter\"=>\"lambda\", :factorial=>\"lambda\"}","children":[{"frame":"{:n=>5}","children":[]},{"frame":"{:product=>1, :counter=>1, :\"max-count\"=>5}","children":[]},{"frame":"{:product=>1, :counter=>2, :\"max-count\"=>5}","children":[]},{"frame":"{:product=>2, :counter=>3, :\"max-count\"=>5}","children":[]},{"frame":"{:product=>6, :counter=>4, :\"max-count\"=>5}","children":[]},{"frame":"{:product=>24, :counter=>5, :\"max-count\"=>5}","children":[]},{"frame":"{:product=>120, :counter=>6, :\"max-count\"=>5}","children":[]}],"name":"global env"};
+    // fact-iter version of factorial, evaluate 5!
+
+
+    var treeData4 = {"frame":"{:car=>\"lambda\", :cdr=>\"lambda\", :cons=>\"lambda\", :+=>\"lambda\", :-=>\"lambda\", :*=>\"lambda\", :**=>\"lambda\", :\"=\"=>\"lambda\", :>=>\"lambda\", :<=>\"lambda\", :factorial=>\"lambda\"}","children":[{"frame":"{:x=>5}","children":[]},{"frame":"{:x=>4}","children":[]},{"frame":"{:x=>3}","children":[]},{"frame":"{:x=>2}","children":[]},{"frame":"{:x=>1}","children":[]},{"frame":"{:x=>0}","children":[]}],"name":"global env"};
+    // recursive factorial, evaluate 5!
+
+
+    var treeData3 = {"frame":{"car":"lambda","cdr":"lambda","cons":"lambda","+":"lambda","-":"lambda","*":"lambda","**":"lambda","=":"lambda",">":"lambda","<":"lambda","f":"lambda"},"children":[{"frame":{"x":5},"children":[]},{"frame":{"x":4},"children":[]},{"frame":{"x":3},"children":[]},{"frame":{"x":2},"children":[]},{"frame":{"x":1},"children":[]}],"name":"global env"};
+
+
+    var treeData2 = {"frame":{"car":"lambda","cdr":"lambda","cons":"lambda","+":"lambda","-":"lambda","*":"lambda","**":"lambda","=":"lambda",">":"lambda","<":"lambda","acc":"lambda","A":"lambda"},"children":[{"frame":{"start":15},"children":[{"frame":{"supplement":10},"children":[]}]}],"name":"global env"};
+    // accumulator, with (define A (acc 5)), then evaluate (A 10)
+
+
+    var treeData1 = {"children" : [
+                        { },
+                        {"name" : "A2", "frame" : ["a", "b", "c"] },
+                        {"name" : "A3", "children": [
+                          {"name" : "A31", "children" :[
+                          {"name" : "A311", "children": [
+                            {"name" : "B1", "frame" : {"a":1, "b":2, "d":3}},
+                            {"name" : "B2" }
+                          ] },
+                          {"name" : "A312" }
+                          ]}] }
+                      ]};
+
+    
+
+      var vis = d3.select("#viz").append("svg:svg")
+                                .attr("width", 500)
+                                .attr("height", 300)
+                                .append("svg:g")
+                                .attr("transform", "translate(150, 0)");
+
+
+    var div = d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 1e-6);
+
+
+
+      var tree = d3.layout.tree()
+                          .size([300,200]);
+
+      var diagonal = d3.svg.diagonal()
+                                              .projection(function(d) { return [d.y, d.x]; });
+
+      var nodes = tree.nodes(treeData);
+      var link = vis.selectAll("pathlink")
+                    .data(tree.links(nodes))
+                    .enter().append("svg:path")
+                    .attr("class", "link")
+                    .attr("d", diagonal);
+
+///////////////
+
+    var node = vis.selectAll("g.node")
+                    .data(nodes)
+                    .enter().append("svg:g")
+                    .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+    node.append("svg:circle")
+            .on("mouseover", mouseover)
+            .on("mousemove", function(d){mousemove(d);})
+            .on("mouseout", mouseout)
+            .attr("fill","red")
+            .attr("r", 5.5);
+ 
+            function mouseover() {
+                div.transition()
+                .duration(300)
+                .style("opacity", 1);
+            }
+ 
+            function mousemove(d) {
+                div
+                .text(d.frame)
+                .style("left", (d3.event.pageX ) + "px")
+                .style("top", (d3.event.pageY) + "px");
+            }
+ 
+            function mouseout() {
+                div.transition()
+                .duration(300)
+                .style("opacity", 1e-6);
+            };
+
+      
+
+                    // node.append("svg:circle")
+                    // .attr("r", 4)
+                    // .style("fill", "red");
+
+
+     
+
+
+
+
+// .append("title")
+// .text(function(d) {
+//         return d.frame;
+       
+//     });
+
+
+
+
+
+    </script>
+  </body>
+</html>
