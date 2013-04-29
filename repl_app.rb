@@ -6,8 +6,8 @@ require_relative './lib/environment'
 require_relative './lib/parser'
 require_relative './lib/tree'
 
-
-enable :sessions
+use Rack::Session::Cookie, :expire_after => 2592000 #30 days in seconds
+#enable :sessions
 
 
 repl_db = {}
