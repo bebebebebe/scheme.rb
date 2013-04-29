@@ -1,6 +1,9 @@
 ;(function(exports) {
   exports.makePicture = function(treeData){
 
+      d3.select("svg")
+       .remove();
+
       var vis = d3.select("#viz").append("svg:svg")
                 .attr("width", 400)
                 .attr("height", 300)
