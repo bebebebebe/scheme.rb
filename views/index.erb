@@ -14,13 +14,43 @@
 
   <section id="add">
 
-    <div id="console" class="console"></div>
+    <div style="width: 100%; overflow: hidden;">
+
+      <div id="console" class="console" style="float: left"></div>
+
+      <div style="margin-left: 550px;"> 
+        <p style="text-align: left"> Type a Scheme expression into the console to see the resulting environment structure. The first node produced is the global environment. Hover over environments to see their bindings.
+        </p>
+      
+      <p style="font-size: 12px; font-weight: bold"> Suggested example:</p>
+      <p style="font-family: monospace; font-size: 11px">
+       > (define make-count (lambda (total) (lambda (extra) (begin (set! total (+ total extra)) total)))) <br>
+      > (define counterA (make-count 0)) <br>
+      > (counterA 1) <br>
+      > (counterA 1) <br>
+      > (define counterB (make-count 5)) <br>
+      > (counterB 1) <br>
+      > (counterA 1) <br>
+    </p>
+      </div>
+
+    </div>
+
+    <!-- <div id="console" class="console"></div> -->
 
     <div id="viz"></div>
 
    </section>
 
 <script>
+
+// <div style="width: 100%; overflow: hidden;">
+//     <div style="width: 600px; float: left;"> Left </div>
+//     <div style="margin-left: 620px;"> Right </div>
+// </div>
+
+
+
 
   // var vis = d3.select("#viz").append("svg:svg")
   //               .attr("width", 400)
