@@ -45,6 +45,7 @@ div.tooltip {
  -moz-border-radius: 5px;
  border: 1px solid #aaa;
  word-wrap: break-word;
+ overflow: hidden;
 }
 
 #console div.jquery-console-inner {
