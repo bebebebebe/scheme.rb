@@ -36,18 +36,16 @@ class Environment
   end
 
   def printable?(x)
-    ![:define, :set!, :lambda].include?(x[0])
+    ![:define, :set!].include?(x[0])
   end
 
   def evaluate(x)
     return env_binding(x).frame[x] if x.is_a? Symbol # x is a variable
-
-    #return x if not x.is_a? Array # x is an atom
     if x.is_a? Array
     case x[0]
       when :define
         frame[x[1]] = evaluate(x[2])
-        label[x[1]] = x[2]                
+        label[x[1]] = x[2]      
       when :lambda
         lambda{ |*args| Environment.new(Hash[x[1].zip(args)], self).evaluate(x[2]) }
       when :if
