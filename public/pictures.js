@@ -38,7 +38,16 @@
             .on("mouseover", mouseover)
             .on("mousemove", function(d){mousemove(d);})
             .on("mouseout", mouseout)
-            .attr("fill","red")
+            .attr("fill", "red")
+            .style("opacity", function(d) { return d.access? 1 : 0.3; })
+
+            //.style("fill", function(d) { return d.access ? "lightsteelblue": "red"; })
+
+
+
+
+            //.style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+            //.attr("fill","red")
             .attr("r", 4.5);
  
             function mouseover() {
