@@ -1,9 +1,9 @@
 class Environment
-  attr_reader :frame, :label, :outer_env, :children, :id
+  attr_reader :frame, :label, :outer_env, :children, :id, :access
 
   @@id_counter = 0
 
-  def initialize(frame, outer_env=nil)
+  def initialize(frame, access, outer_env=nil)
     @id = @@id_counter
     @@id_counter += 1
 
@@ -14,11 +14,12 @@ class Environment
     if outer_env
       outer_env.children << self
     end
+    @access = access
 
   end
 
   def self.global_env
-    Environment.new :car => lambda{|lat| lat[0]},
+    Environment.new({:car => lambda{|lat| lat[0]},
                     :cdr => lambda{|lat| lat.drop(1)},
                     :cons => lambda{|a, lat| [a] + lat},
                     :+ => lambda{|x,y| x + y},
@@ -28,7 +29,8 @@ class Environment
                     :** => lambda{|x,y| x ** y},
                     :"=" => lambda{|x,y| x == y},
                     :">" => lambda{|x,y| x > y},
-                    :"<" => lambda{|x,y| x < y}
+                    :"<" => lambda{|x,y| x < y}},
+                    true)
   end
 
   def env_binding(var) # the environment that binds variable var
@@ -47,7 +49,9 @@ class Environment
         frame[x[1]] = evaluate(x[2])
         label[x[1]] = x[2]      
       when :lambda
-        lambda{ |*args| Environment.new(Hash[x[1].zip(args)], self).evaluate(x[2]) }
+        puts x.inspect
+        lambda{ |*args| Environment.new(Hash[x[1].zip(args)], x[2][0] == :lambda, self).evaluate(x[2]) }
+
       when :if
         evaluate(x[1]) ? evaluate(x[2]) : evaluate(x[3])
       when :quote 
