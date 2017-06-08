@@ -1,6 +1,6 @@
 # Visual Schemer
 
-Try it out <a href='https://visual-schemer.herokuapp.com/'>here</a>!
+Try it out <a href='https://visual-scheme.herokuapp.com/'>here</a>!
 
 In browser Scheme interpreter with semantic visualizations.
 
